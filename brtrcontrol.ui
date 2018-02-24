@@ -21,38 +21,38 @@
        <number>20</number>
       </property>
       <item row="2" column="0">
-       <widget class="QLabel" name="label_7">
+       <widget class="QLabel" name="kaL">
         <property name="text">
          <string>KA</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="kaInput">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="4" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="submitKaPb">
         <property name="text">
          <string>Submit</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="delKaPb">
         <property name="text">
          <string>Delete</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="kAComBox"/>
       </item>
       <item row="3" column="0" colspan="2">
-       <spacer name="verticalSpacer_4">
+       <spacer name="kaSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -65,7 +65,7 @@
        </spacer>
       </item>
       <item row="1" column="0" colspan="2">
-       <spacer name="verticalSpacer_5">
+       <spacer name="kaSpacer0">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -88,52 +88,52 @@
        <number>20</number>
       </property>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="addrInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="comboBox_2"/>
+       <widget class="QComboBox" name="sysComBox"/>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="label_8">
+       <widget class="QLabel" name="addrL">
         <property name="text">
          <string>Address</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="submitSysPb">
         <property name="text">
          <string>Submit</string>
         </property>
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_9">
+       <widget class="QLabel" name="NameL">
         <property name="text">
          <string>Name</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="lineEdit_3">
+       <widget class="QLineEdit" name="namInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="6" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButton_4">
+       <widget class="QPushButton" name="delSysPb">
         <property name="text">
          <string>Delete</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0" colspan="2">
-       <spacer name="verticalSpacer_3">
+       <spacer name="sysSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -146,7 +146,7 @@
        </spacer>
       </item>
       <item row="1" column="0" colspan="2">
-       <spacer name="verticalSpacer_6">
+       <spacer name="sysSpacer0">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -169,66 +169,66 @@
        <number>20</number>
       </property>
       <item row="7" column="0" colspan="3">
-       <widget class="QPushButton" name="pushButton_6">
+       <widget class="QPushButton" name="delSubSysPb">
         <property name="text">
          <string>Delete</string>
         </property>
        </widget>
       </item>
       <item row="4" column="2">
-       <widget class="QLineEdit" name="lineEdit_6">
+       <widget class="QLineEdit" name="nameInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="6" column="0" colspan="3">
-       <widget class="QPushButton" name="pushButton_5">
+       <widget class="QPushButton" name="submitSubSysPb">
         <property name="text">
          <string>Submit</string>
         </property>
        </widget>
       </item>
       <item row="3" column="0" colspan="2">
-       <widget class="QLabel" name="label_11">
+       <widget class="QLabel" name="countDWL">
         <property name="text">
          <string>Count_data_word</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0" colspan="2">
-       <widget class="QLabel" name="label_12">
+       <widget class="QLabel" name="nameL">
         <property name="text">
          <string>name</string>
         </property>
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QLineEdit" name="lineEdit_4">
+       <widget class="QLineEdit" name="subaddrInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="0" column="0" colspan="3">
-       <widget class="QComboBox" name="comboBox_3"/>
+       <widget class="QComboBox" name="subSysComBox"/>
       </item>
       <item row="3" column="2">
-       <widget class="QLineEdit" name="lineEdit_5">
+       <widget class="QLineEdit" name="countDataWordInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="label_10">
+       <widget class="QLabel" name="subaddrL">
         <property name="text">
          <string>Subaddress</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0" colspan="3">
-       <spacer name="verticalSpacer_2">
+       <spacer name="subsysSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -241,7 +241,7 @@
        </spacer>
       </item>
       <item row="1" column="0" colspan="3">
-       <spacer name="verticalSpacer_7">
+       <spacer name="subsysSpacer0">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -266,14 +266,14 @@
       <item row="2" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QRadioButton" name="radioButton">
+         <widget class="QRadioButton" name="commRb">
           <property name="text">
            <string>Command</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QRadioButton" name="telemRb">
           <property name="text">
            <string>Telemetry</string>
           </property>
@@ -282,91 +282,91 @@
        </layout>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="cBitL">
         <property name="text">
          <string>count_bit</string>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="lineEdit_9">
+       <widget class="QLineEdit" name="countBitInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="nBitL">
         <property name="text">
          <string>number_bit</string>
         </property>
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QLineEdit" name="lineEdit_10">
+       <widget class="QLineEdit" name="numBitInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="6" column="0">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="nDWL">
         <property name="text">
          <string>number_data_word</string>
         </property>
        </widget>
       </item>
       <item row="6" column="1">
-       <widget class="QLineEdit" name="lineEdit_11">
+       <widget class="QLineEdit" name="numDataWInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="7" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="rtL">
         <property name="text">
          <string>reaction_time</string>
         </property>
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="QLineEdit" name="lineEdit_12">
+       <widget class="QLineEdit" name="reactionTimeInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="8" column="0">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="nameComTmL">
         <property name="text">
          <string>name</string>
         </property>
        </widget>
       </item>
       <item row="8" column="1">
-       <widget class="QLineEdit" name="lineEdit_7">
+       <widget class="QLineEdit" name="nameCmdTelInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="9" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="descrL">
         <property name="text">
          <string>description</string>
         </property>
        </widget>
       </item>
       <item row="9" column="1">
-       <widget class="QLineEdit" name="lineEdit_8">
+       <widget class="QLineEdit" name="descrInp">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
       <item row="10" column="0" colspan="2">
-       <spacer name="verticalSpacer">
+       <spacer name="comTmSpacer2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -379,7 +379,7 @@
        </spacer>
       </item>
       <item row="3" column="0" colspan="2">
-       <spacer name="verticalSpacer_8">
+       <spacer name="comTmSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -395,7 +395,7 @@
        </spacer>
       </item>
       <item row="1" column="0" colspan="2">
-       <spacer name="verticalSpacer_9">
+       <spacer name="comTmSpacer0">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -411,17 +411,17 @@
        </spacer>
       </item>
       <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="comboBox_4"/>
+       <widget class="QComboBox" name="comTmiSwComBox"/>
       </item>
       <item row="11" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButton_7">
+       <widget class="QPushButton" name="submitComTmiPb">
         <property name="text">
          <string>Submit</string>
         </property>
        </widget>
       </item>
       <item row="12" column="0" colspan="2">
-       <widget class="QPushButton" name="pushButton_8">
+       <widget class="QPushButton" name="delComTmiPb">
         <property name="text">
          <string>Delete</string>
         </property>
@@ -453,32 +453,32 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>comboBox</tabstop>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>pushButton</tabstop>
-  <tabstop>pushButton_2</tabstop>
-  <tabstop>comboBox_2</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>pushButton_3</tabstop>
-  <tabstop>pushButton_4</tabstop>
-  <tabstop>comboBox_3</tabstop>
-  <tabstop>lineEdit_4</tabstop>
-  <tabstop>lineEdit_5</tabstop>
-  <tabstop>lineEdit_6</tabstop>
-  <tabstop>pushButton_5</tabstop>
-  <tabstop>pushButton_6</tabstop>
-  <tabstop>comboBox_4</tabstop>
-  <tabstop>radioButton</tabstop>
-  <tabstop>radioButton_2</tabstop>
-  <tabstop>lineEdit_9</tabstop>
-  <tabstop>lineEdit_10</tabstop>
-  <tabstop>lineEdit_11</tabstop>
-  <tabstop>lineEdit_12</tabstop>
-  <tabstop>lineEdit_7</tabstop>
-  <tabstop>lineEdit_8</tabstop>
-  <tabstop>pushButton_7</tabstop>
-  <tabstop>pushButton_8</tabstop>
+  <tabstop>kAComBox</tabstop>
+  <tabstop>kaInput</tabstop>
+  <tabstop>submitKaPb</tabstop>
+  <tabstop>delKaPb</tabstop>
+  <tabstop>sysComBox</tabstop>
+  <tabstop>addrInp</tabstop>
+  <tabstop>namInp</tabstop>
+  <tabstop>submitSysPb</tabstop>
+  <tabstop>delSysPb</tabstop>
+  <tabstop>subSysComBox</tabstop>
+  <tabstop>subaddrInp</tabstop>
+  <tabstop>countDataWordInp</tabstop>
+  <tabstop>nameInp</tabstop>
+  <tabstop>submitSubSysPb</tabstop>
+  <tabstop>delSubSysPb</tabstop>
+  <tabstop>comTmiSwComBox</tabstop>
+  <tabstop>commRb</tabstop>
+  <tabstop>telemRb</tabstop>
+  <tabstop>countBitInp</tabstop>
+  <tabstop>numBitInp</tabstop>
+  <tabstop>numDataWInp</tabstop>
+  <tabstop>reactionTimeInp</tabstop>
+  <tabstop>nameCmdTelInp</tabstop>
+  <tabstop>descrInp</tabstop>
+  <tabstop>submitComTmiPb</tabstop>
+  <tabstop>delComTmiPb</tabstop>
  </tabstops>
  <resources/>
  <connections/>
