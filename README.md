@@ -5,7 +5,7 @@ Developed by me as intern in "Russian Space Systems" and will work for corporate
 This program is still in development so some features can work incorrectly.
 
 User inteface gives you the ability to add, delete and display information on cosmic vehicles.
-![alt tag](brtr.png)
+![alt tag](brtr_normal_cut.png)
 # Built With
 - [Qt](http://www.qt.io/) - user interface and internal logic
 - [SQLite Maestro](https://www.sqlmaestro.com/products/sqlite/maestro/) - used to create a database for this project
