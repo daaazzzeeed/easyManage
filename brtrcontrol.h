@@ -19,26 +19,10 @@ public:
     ~brtrControl();
 
     QSqlDatabase db;
-    QHash<int, QString>*  hash_ka;
-    QString id  ;  //system id
-    QString id_ka   ;
-    QString id_sys  ;
-    QString address ;
-    QString name    ;
-    QString id_s;
-    QString id_ss;
-    QString subaddress;
-    QString count_data_word;
-    QString name_s;
-    QString id_subsys;
-    QString id_subs;
-    QString c_bit;
-    QString n_bit;
-    QString n_d_word;
-    QString r_time;
-    QString com_name;
-    QString com_description;
-    QString id_com;
+    QString id, id_ka, id_sys, address, name, id_s, id_ss,
+    subaddress, count_data_word, name_s, id_subsys, id_subs,
+    c_bit, n_bit, n_d_word, r_time, com_name, com_description,
+    id_com, id_tmi, n_par, tmi_name, tmi_description;
 
 private:
     Ui::brtrControl *ui;
@@ -62,14 +46,14 @@ private slots:
     void update_system();
     void update_subsystem();
 
-    void add_and_remove_repeat(QComboBox *comBox, QString item, QString id_);
-
     void delete_records(QString tableName, QString row_name, QComboBox *comBox);
     void dispProps();
     void onSubSysItemActivated();
     void onComItemActivated();
 
     void update_com_tmi();
+
+    void update_labels();
 
 };
 

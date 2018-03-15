@@ -34,9 +34,7 @@ brtrControl::brtrControl(QWidget *parent) :
     ui->delComTmiPb->setDisabled(true);
 
     ui->sysComBox->setDuplicatesEnabled(false);
-
-
-
+s
     connect(ui->submitKaPb,QPushButton::clicked, this, brtrControl::onSubmitKaClicked);
     connect(ui->submitSysPb,QPushButton::clicked, this, brtrControl::onSubmitSysClicked);
     connect(ui->submitSubSysPb,QPushButton::clicked, this, brtrControl::onSubmitSubSysClicked);
@@ -54,8 +52,11 @@ brtrControl::brtrControl(QWidget *parent) :
     connect(ui->subSysComBox, SIGNAL(activated(int)), SLOT(onSubSysItemActivated()));
     connect(ui->comTmiSwComBox, SIGNAL(activated(int)), SLOT(onComItemActivated()));
     connect(ui->sysComBox, SIGNAL(activated(int)), SLOT(dispProps()));
+    connect(ui->commRb, SIGNAL(clicked(bool)),SLOT(update_com_tmi()));
+    connect(ui->telemRb, SIGNAL(clicked(bool)),SLOT(update_com_tmi()));
+    connect(ui->commRb, SIGNAL(clicked(bool)),SLOT(update_labels()));
+    connect(ui->telemRb, SIGNAL(clicked(bool)),SLOT(update_labels()));
 
-    hash_ka = new QHash<int, QString>();
 
     const QString path = "C:/Users/DmitryP/Documents/sqLiteDb/BrtrMpiControl.db";
 
@@ -74,8 +75,11 @@ brtrControl::brtrControl(QWidget *parent) :
         qDebug() << "file doesnot exist";
         exit(0);
     }
+
 update_ka();
 update_system();
+update_subsystem();
+update_com_tmi();
 
 }
 
@@ -85,31 +89,15 @@ brtrControl::~brtrControl()
 }
 
 void brtrControl::onSubmitKaClicked(){
-    QString query = "INSERT INTO KA (ka) VALUES (" + ui->kaInput->text() + ")";
+    QString query = "INSERT INTO KA (ka) VALUES ('" + ui->kaInput->text() + "')";
     QSqlQuery sqlQuery(db);
+    qDebug() << "QUERY: " << query;
 
     if(sqlQuery.exec(query)){
-        sqlQuery.clear();
-        if(sqlQuery.exec("SELECT id, ka FROM KA ORDER BY id DESC LIMIT 1")) {
-            if (sqlQuery.next()){
-                hash_ka->insert(sqlQuery.value(0).toInt(),sqlQuery.value(1).toString());
-               // qDebug() << sqlQuery.value(0).toInt() << sqlQuery.value(1).toString();
-                qDebug() << "[" << hash_ka->key(sqlQuery.value(1).toString()) << ":" << hash_ka->value(sqlQuery.value(0).toInt()) << "]";
 
-                ui->addrInp->setEnabled(1);
-                ui->namInp->setEnabled(1);
-                ui->submitSysPb->setEnabled(1);
-                ui->delSysPb->setEnabled(1);
-                ui->sysComBox->setEnabled(1);
-            }
-            else{
-                qDebug() << "aaaaaaa";
-            }
         ui->kAComBox->addItem(ui->kaInput->text());
-        }
-
-
-      }else{
+    }
+    else{
           qDebug() << "query failed...";
       }
      update_ka();
@@ -134,7 +122,6 @@ void brtrControl::onSubmitSysClicked(){
      update_system();
      update_subsystem();
      update_com_tmi();
-
 }
 
 void brtrControl::onSubmitSubSysClicked(){
@@ -148,7 +135,6 @@ void brtrControl::onSubmitSubSysClicked(){
         qDebug() << query << " query failed...";
         qDebug() << sqlQuery.lastError();
     }
-
     ui->submitComTmiPb->setEnabled(1);
     ui->delComTmiPb->setEnabled(1);
     ui->comTmiSwComBox->setEnabled(1);
@@ -161,22 +147,37 @@ void brtrControl::onSubmitSubSysClicked(){
 
     update_subsystem();
     update_com_tmi();
-
 }
 
 void brtrControl::onSubmitComTmiClicked(){
-    QSqlQuery sqlQuery(db);
-    id_subsys = ui->subSysComBox->itemData(ui->subSysComBox->currentIndex()).toString();
-    QString query = "INSERT INTO Command (id_subsystem, count_bit, number_bit, number_data_word, reaction_time, name, description) VALUES ('" + id_subsys + "','" + ui->countBitInp->text() + "','" + ui->numBitInp->text() + "','" + ui->numDataWInp->text() + "','" + ui->reactionTimeInp->text() + "','" + ui->nameCmdTelInp->text() + "','" + ui->descrInp->text() + "')";
-    qDebug() << query;
-    if(sqlQuery.exec(query)){
-        qDebug() << query << " INSERTED OK...";
-    }else{
-        qDebug() << query << " query failed...";
-        qDebug() << sqlQuery.lastError();
-    }
+    if(ui->commRb->isChecked()){
+        QSqlQuery sqlQuery(db);
+        id_subsys = ui->subSysComBox->itemData(ui->subSysComBox->currentIndex()).toString();
+        QString query = "INSERT INTO Command (id_subsystem, count_bit, number_bit, number_data_word, reaction_time, name, description) VALUES ('" + id_subsys + "','" + ui->countBitInp->text() + "','" + ui->numBitInp->text() + "','" + ui->numDataWInp->text() + "','" + ui->reactionTimeInp->text() + "','" + ui->nameCmdTelInp->text() + "','" + ui->descrInp->text() + "')";
+        qDebug() << query;
+        if(sqlQuery.exec(query)){
+            qDebug() << query << " INSERTED OK...";
+        }else{
+            qDebug() << query << " query failed...";
+            qDebug() << sqlQuery.lastError();
+        }
 
-    update_com_tmi();
+        update_com_tmi();
+    }else{
+        if(ui->telemRb->isChecked()){
+            QSqlQuery sqlQuery(db);
+            id_subsys = ui->subSysComBox->itemData(ui->subSysComBox->currentIndex()).toString();
+            QString query = "INSERT INTO TMI (id_subsystem, number_parameter, count_bit, number_bit, number_data_word, name, description) VALUES ('" + id_subsys + "','" + ui->countBitInp->text() + "','" + ui->numBitInp->text() + "','" + ui->numDataWInp->text() + "','" + ui->reactionTimeInp->text() + "','" + ui->nameCmdTelInp->text() + "','" + ui->descrInp->text() + "')";
+            qDebug() << query;
+            if(sqlQuery.exec(query)){
+                qDebug() << query << " INSERTED OK...";
+            }else{
+                qDebug() << query << " query failed...";
+                qDebug() << sqlQuery.lastError();
+            }
+            update_com_tmi();
+        }
+    }
 }
 
 void brtrControl::onDelKaClicked(){
@@ -193,6 +194,8 @@ void brtrControl::onDelKaClicked(){
 
     delete_records("System", "id_ka", ui->kAComBox);
     delete_records("SubSystem", "id_system", ui->sysComBox);
+    delete_records("Command", "id_subsystem",ui->subSysComBox);
+    delete_records("TMI", "id_subsystem",ui->subSysComBox);
 
     ui->kAComBox->removeItem(ui->kAComBox->currentIndex());
     ui->sysComBox->clear();
@@ -200,9 +203,9 @@ void brtrControl::onDelKaClicked(){
     ui->addrInp->clear();
 
     update_ka();
-   // update_system();
-   // update_subsystem();
-   // update_com_tmi();
+    update_system();
+    update_subsystem();
+    update_com_tmi();
 
     ui->comTmiSwComBox->clear();
     ui->countBitInp->clear();
@@ -241,6 +244,7 @@ void brtrControl::onDelSysClicked(){
     update_system();
 
     delete_records("Command", "id_subsystem", ui->subSysComBox);
+    delete_records("TMI", "id_subsystem",ui->subSysComBox);
     ui->subSysComBox->removeItem(ui->subSysComBox->currentIndex());
     update_subsystem();
     update_com_tmi();
@@ -251,15 +255,12 @@ void brtrControl::onDelSysClicked(){
     ui->reactionTimeInp->clear();
     ui->nameCmdTelInp->clear();
     ui->descrInp->clear();
-
     ui->subaddrInp->clear();
     ui->countDataWordInp->clear();
     ui->nameInp->clear();
-
     ui->addrInp->clear();
     ui->namInp->clear();
     ui->subSysComBox->clear();
-
 
 }
 
@@ -276,6 +277,7 @@ void brtrControl::onDelSubSysClicked(){
       return;
     }
     delete_records("Command", "id_subsystem", ui->subSysComBox);
+    delete_records("TMI", "id_subsystem",ui->subSysComBox);
     ui->subSysComBox->removeItem(ui->subSysComBox->currentIndex());
     update_subsystem();
     update_com_tmi();
@@ -290,7 +292,6 @@ void brtrControl::onDelSubSysClicked(){
     ui->subaddrInp->clear();
     ui->countDataWordInp->clear();
     ui->nameInp->clear();
-
 }
 
 void brtrControl::onDelComTmiClicked(){
@@ -326,10 +327,7 @@ void brtrControl::onDelComTmiClicked(){
      ui->delSysPb->setEnabled(1);
      ui->sysComBox->setEnabled(1);
 
-    // update_ka();
      update_system();
-     update_subsystem();
-     update_com_tmi();
  }
 
  void brtrControl::update_ka(){
@@ -344,9 +342,12 @@ void brtrControl::onDelComTmiClicked(){
      }
 
      while (sqlQ.next()){
-         hash_ka->insert(sqlQ.value(0).toInt(), sqlQ.value(1).toString());
-         ui->kAComBox->addItem(sqlQ.value(1).toString(),sqlQ.value(0).toInt());//hash_ka->value(sqlQ.value(0).toInt()), hash_ka->key(sqlQ.value(1).toString()));
+         ui->kAComBox->addItem(sqlQ.value(1).toString(),sqlQ.value(0).toInt());
      }
+
+     update_system();
+     update_subsystem();
+     update_com_tmi();
  }
 
  void brtrControl::kaChanged(int index)
@@ -355,6 +356,7 @@ void brtrControl::onDelComTmiClicked(){
  }
 
  void brtrControl::update_system(){
+     ui->sysComBox->clear();
 
      QString query = "SELECT id, id_ka, address, name FROM System WHERE id_ka = :id_ka";
 
@@ -383,10 +385,11 @@ void brtrControl::onDelComTmiClicked(){
           qDebug() << "name: " << name;
 
           QString item = address+","+name;
-          //ui->sysComBox->addItem(item, id);
-          add_and_remove_repeat(ui->sysComBox, item, id);
+          ui->sysComBox->addItem(item, id);
      }
 
+     update_subsystem();
+     update_com_tmi();
  }
 
  void brtrControl::onSysItemActivated(){
@@ -407,27 +410,10 @@ void brtrControl::onDelComTmiClicked(){
      ui->addrInp->setText(qsl.at(0));
      ui->namInp->setText(qsl.at(1));
 
-    // update_system();
      update_subsystem();
-     update_com_tmi();
  }
 
-   void brtrControl::add_and_remove_repeat(QComboBox *comBox, QString item, QString id_){
-       comBox->addItem(item, id_);
-       for(int index1 = 0; index1 < comBox->count(); index1++){
-           for(int index2 = 0; index2 < comBox->count(); index2++){
-               qDebug() << "ui->comBox->itemText(index1): " << comBox->itemText(index1);
-               qDebug() << "ui->comBox->itemText(index2): " << comBox->itemText(index2);
-               if(index1 != index2){
-                   if(comBox->itemText(index1) == comBox->itemText(index2)){
-                      comBox->removeItem(index2);
-                   }
-               }
-           }
-       }
-   }
-
-   void brtrControl::delete_records(QString tableName, QString row_name, QComboBox *comBox){
+ void brtrControl::delete_records(QString tableName, QString row_name, QComboBox *comBox){
        QSqlQuery sqlQuery(db);
        QString query = " DELETE FROM " + tableName + " WHERE " + row_name + " = " + comBox->currentData().toString();
        sqlQuery.prepare(query);
@@ -446,6 +432,8 @@ void brtrControl::onDelComTmiClicked(){
    }
 
    void brtrControl::update_subsystem(){
+       ui->subSysComBox->clear();
+
        QString query = "SELECT id, id_system, subaddress, count_data_word, name FROM SubSystem WHERE id_system = :id_sys";
 
        QSqlQuery sqlQ(db);
@@ -476,8 +464,9 @@ void brtrControl::onDelComTmiClicked(){
             qDebug() << "name_s: " << name_s;
 
             QString item = subaddress+","+ count_data_word + "," +name_s;
-            add_and_remove_repeat(ui->subSysComBox, item, id_ss);
+            ui->subSysComBox->addItem(item, id_ss);
        }
+              update_com_tmi();
    }
 
    void brtrControl::onSubSysItemActivated(){
@@ -502,55 +491,93 @@ void brtrControl::onDelComTmiClicked(){
        ui->descrInp->setEnabled(1);
        ui->numBitInp->setEnabled(1);
 
-
-      // update_system();
-       //update_subsystem();
        update_com_tmi();
    }
 
    void brtrControl::update_com_tmi(){
-       QString query = "SELECT id, id_subsystem, count_bit, number_bit, number_data_word, reaction_time, name, description FROM Command WHERE id_subsystem = :id_subsys";
+           if(ui->commRb->isChecked()){
+               ui->comTmiSwComBox->clear();
+               QString query = "SELECT id, id_subsystem, count_bit, number_bit, number_data_word, reaction_time, name, description FROM Command WHERE id_subsystem = :id_subsys";
 
-       QSqlQuery sqlQ(db);
-       sqlQ.prepare(query);
+               QSqlQuery sqlQ(db);
+               sqlQ.prepare(query);
 
-       QString value =  ui->subSysComBox->itemData(ui->subSysComBox->currentIndex()).toString();
-       sqlQ.bindValue(0,value);
-       qDebug() << query;
-       qDebug() << "id_subsystem i need" <<value;
+               QString value =  ui->subSysComBox->itemData(ui->subSysComBox->currentIndex()).toString();
+               sqlQ.bindValue(0,value);
+               qDebug() << query;
+               qDebug() << "id_subsystem i need" <<value;
 
-       if(!sqlQ.exec()) {
-           qDebug() << "update_command: query failed...";
-           return;
+               if(!sqlQ.exec()) {
+                   qDebug() << "update_command: query failed...";
+                   return;
+               }
+
+               while (sqlQ.next()){
+                    id_com     = sqlQ.value(0).toString();
+                    qDebug() << "id: " << id_com;
+                    id_subs   = sqlQ.value(1).toString();
+                    qDebug() << "id_subSystem: " << id_subs;
+                    c_bit = sqlQ.value(2).toString();
+                    qDebug() << "count_bit: " << c_bit;
+                    n_bit    = sqlQ.value(3).toString();
+                    qDebug() << "number_bit: " << count_data_word;
+                    n_d_word   = sqlQ.value(4).toString();
+                    qDebug() << "number_data_word: " << n_d_word;
+                    r_time   = sqlQ.value(5).toString();
+                    qDebug() << "reaction_time: " << r_time;
+                    com_name   = sqlQ.value(6).toString();
+                    qDebug() << "name: " << com_name;
+                    com_description   = sqlQ.value(7).toString();
+                    qDebug() << "descriprion: " << com_description;
+
+                    QString item = c_bit+","+ n_bit + "," + n_d_word + "," + r_time  + "," + com_name  + "," + com_description;
+                    qDebug() << "item: " << item;
+                    ui->comTmiSwComBox->addItem(item, id_com);
+           }
+       }else{
+               if(ui->telemRb->isChecked()){
+                   ui->comTmiSwComBox->clear();
+
+                   QString query = "SELECT id, id_subsystem, number_parameter, count_bit, number_bit, number_data_word, name, description FROM TMI WHERE id_subsystem = :id_subsys";
+
+                   QSqlQuery sqlQ(db);
+                   sqlQ.prepare(query);
+
+                   QString value =  ui->subSysComBox->itemData(ui->subSysComBox->currentIndex()).toString();
+                   sqlQ.bindValue(0,value);
+                   qDebug() << query;
+                   qDebug() << "id_subsystem i need" <<value;
+
+                   if(!sqlQ.exec()) {
+                       qDebug() << "update_command: query failed...";
+                       return;
+                   }
+
+                   while (sqlQ.next()){
+                        id_tmi     = sqlQ.value(0).toString();
+                        qDebug() << "id: " << id_com;
+                        id_subs   = sqlQ.value(1).toString();
+                        qDebug() << "id_subSystem: " << id_subs;
+                        n_par = sqlQ.value(2).toString();
+                        qDebug()<< "number_parameter: " << n_par;
+                        c_bit = sqlQ.value(3).toString();
+                        qDebug() << "count_bit: " << c_bit;
+                        n_bit    = sqlQ.value(4).toString();
+                        qDebug() << "number_bit: " << count_data_word;
+                        n_d_word   = sqlQ.value(5).toString();
+                        qDebug() << "number_data_word: " << n_d_word;
+                        tmi_name   = sqlQ.value(6).toString();
+                        qDebug() << "name: " << tmi_name;
+                        tmi_description   = sqlQ.value(7).toString();
+                        qDebug() << "descriprion: " << tmi_description;
+
+                        QString item = n_par + "," + c_bit+","+ n_bit + "," + n_d_word + "," + tmi_name  + "," + tmi_description;
+                        qDebug() << "item: " << item;
+                        ui->comTmiSwComBox->addItem(item, id_tmi);
+
+               }
+           }
        }
-
-      // qDebug() << sqlQ.executedQuery();
-
-
-       while (sqlQ.next()){
-            id_com     = sqlQ.value(0).toString();
-            qDebug() << "id: " << id_com;
-            id_subs   = sqlQ.value(1).toString();
-            qDebug() << "id_subSystem: " << id_subs;
-            c_bit = sqlQ.value(2).toString();
-            qDebug() << "count_bit: " << c_bit;
-            n_bit    = sqlQ.value(3).toString();
-            qDebug() << "number_bit: " << count_data_word;
-            n_d_word   = sqlQ.value(4).toString();
-            qDebug() << "number_data_word: " << n_d_word;
-            r_time   = sqlQ.value(5).toString();
-            qDebug() << "reaction_time: " << r_time;
-            com_name   = sqlQ.value(6).toString();
-            qDebug() << "name: " << com_name;
-            com_description   = sqlQ.value(7).toString();
-            qDebug() << "descriprion: " << com_description;
-
-            QString item = c_bit+","+ n_bit + "," + n_d_word + "," + r_time  + "," + com_name  + "," + com_description;
-            qDebug() << "item: " << item;
-            add_and_remove_repeat(ui->comTmiSwComBox, item, id_com);
-       }
-
-
    }
 
    void brtrControl::onComItemActivated(){
@@ -568,7 +595,25 @@ void brtrControl::onDelComTmiClicked(){
        ui->nameCmdTelInp->setText(qsl.at(4));
        ui->descrInp->setText(qsl.at(5));
 
-    update_com_tmi();
+   }
 
+   void brtrControl::update_labels(){
+       if(ui->commRb->isChecked()){
+           ui->cBitL->setText("count_bit");
+           ui->nBitL->setText("number_bit");
+           ui->nDWL->setText("number_data_word");
+           ui->rtL->setText("reaction_time");
+           ui->nameL->setText("name");
+           ui->descrL->setText("description");
 
+       }else{
+           if(ui->telemRb->isChecked()){
+               ui->cBitL->setText("number_parameter");
+               ui->nBitL->setText("count_bit");
+               ui->nDWL->setText("number_bit");
+               ui->rtL->setText("number_data_word");
+               ui->nameL->setText("name");
+               ui->descrL->setText("description");
+           }
+       }
    }
