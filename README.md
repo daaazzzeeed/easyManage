@@ -50,10 +50,13 @@ Contains 5 tables:
     
 # Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+This application requires SQLite client(e.g. SQLite Maestro).
 
 ## Installing
+Create new database with instructions above or just use '.db' file from this repository.
 Download and run Qt Creator, download this project, then open '.pro' file, setup your project. 
-Now you a ready to go!
+In your project change path to '.db' file to match the directory you store the database in.
+Now you're ready to go!
 
 # Authors
 - Dmitry Petukhov - Initial work/founder
