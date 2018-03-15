@@ -8,7 +8,9 @@ Ka is the main table containing System, containing SubSystem, containing ComTmi.
 
 User inteface gives you the ability to add, delete and display information on cosmic vehicles.
 ![alt tag](brtr_normal_cut.png)
+Screenshots provide user with the general look of this application.
 ![alt tag](combobox.png)
+
 # Built With
 - [Qt](http://www.qt.io/) - user interface and internal logic
 - [SQLite Maestro](https://www.sqlmaestro.com/products/sqlite/maestro/) - used to create a database for this project
