@@ -4,6 +4,8 @@ This is a database control system written to automate filling corporate database
 Developed by me as intern in "Russian Space Systems" and will work for corporate purposes after the future release.
 This program is still in development so some features can work incorrectly.
 
+Ka is the main table containing System, containing SubSystem, containing ComTmi. Removal of Ka element entails chain removal of appropriate System, SubSystem and ComTmi elements. Similar situation applies to the removal of System and SubSystem elements.
+
 User inteface gives you the ability to add, delete and display information on cosmic vehicles.
 ![alt tag](brtr_normal_cut.png)
 ![alt tag](combobox.png)
