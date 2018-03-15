@@ -34,7 +34,7 @@ brtrControl::brtrControl(QWidget *parent) :
     ui->delComTmiPb->setDisabled(true);
 
     ui->sysComBox->setDuplicatesEnabled(false);
-s
+        
     connect(ui->submitKaPb,QPushButton::clicked, this, brtrControl::onSubmitKaClicked);
     connect(ui->submitSysPb,QPushButton::clicked, this, brtrControl::onSubmitSysClicked);
     connect(ui->submitSubSysPb,QPushButton::clicked, this, brtrControl::onSubmitSubSysClicked);
