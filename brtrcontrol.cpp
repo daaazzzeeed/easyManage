@@ -4,6 +4,9 @@
 #include <QFile>
 #include <QSqlError>
 #include <QHash>
+#include <QFileDialog>
+#include <QSettings>
+
 
 brtrControl::brtrControl(QWidget *parent) :
     QMainWindow(parent),
@@ -34,7 +37,7 @@ brtrControl::brtrControl(QWidget *parent) :
     ui->delComTmiPb->setDisabled(true);
 
     ui->sysComBox->setDuplicatesEnabled(false);
-        
+
     connect(ui->submitKaPb,QPushButton::clicked, this, brtrControl::onSubmitKaClicked);
     connect(ui->submitSysPb,QPushButton::clicked, this, brtrControl::onSubmitSysClicked);
     connect(ui->submitSubSysPb,QPushButton::clicked, this, brtrControl::onSubmitSubSysClicked);
@@ -56,15 +59,23 @@ brtrControl::brtrControl(QWidget *parent) :
     connect(ui->telemRb, SIGNAL(clicked(bool)),SLOT(update_com_tmi()));
     connect(ui->commRb, SIGNAL(clicked(bool)),SLOT(update_labels()));
     connect(ui->telemRb, SIGNAL(clicked(bool)),SLOT(update_labels()));
+    QSettings settings("myapp.ini",
+                        QSettings::IniFormat);
+         settings.beginGroup("MainWindow");
+         QString lastpath = settings.value("lastpath", "").toString();
+         settings.endGroup();
+    if(lastpath==""){
+      lastpath = loadDatabaseFile();
+      settings.beginGroup("MainWindow");
+      settings.setValue("lastpath",lastpath);
+      settings.endGroup();
+    }
 
-
-    const QString path = "C:/Users/DmitryP/Documents/sqLiteDb/BrtrMpiControl.db";
-
-    if(QFile::exists(path)){
+    if(QFile::exists(lastpath)){
 
         db = QSqlDatabase::addDatabase("QSQLITE");
         db.setHostName("localhost");
-        db.setDatabaseName(path);
+        db.setDatabaseName(lastpath);
 
         if(db.open()){
             qDebug() << "db opened OK...";
@@ -606,6 +617,13 @@ void brtrControl::onDelComTmiClicked(){
            ui->nameL->setText("name");
            ui->descrL->setText("description");
 
+           ui->countBitInp->clear();
+           ui->numBitInp->clear();
+           ui->numDataWInp->clear();
+           ui->reactionTimeInp->clear();
+           ui->nameCmdTelInp->clear();
+           ui->descrInp->clear();
+
        }else{
            if(ui->telemRb->isChecked()){
                ui->cBitL->setText("number_parameter");
@@ -614,6 +632,19 @@ void brtrControl::onDelComTmiClicked(){
                ui->rtL->setText("number_data_word");
                ui->nameL->setText("name");
                ui->descrL->setText("description");
+
+               ui->countBitInp->clear();
+               ui->numBitInp->clear();
+               ui->numDataWInp->clear();
+               ui->reactionTimeInp->clear();
+               ui->nameCmdTelInp->clear();
+               ui->descrInp->clear();
            }
        }
    }
+
+   QString brtrControl::loadDatabaseFile(){
+       QString filename = QFileDialog::getOpenFileName(this,"Open DataBase", QDir::currentPath(),"DataBase files (*.db)");
+       return filename;
+   }
+
