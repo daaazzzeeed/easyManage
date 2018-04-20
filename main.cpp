@@ -4,6 +4,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QMenuBar menuBar;
     brtrControl w;
     w.setWindowTitle("СУБД команд МПИ управления БРТР");
     w.show();

@@ -5,16 +5,18 @@
 #-------------------------------------------------
 
 QT       += core gui sql
-
+#test
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = brtrMpiControl
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        brtrcontrol.cpp
+SOURCES += src/main.cpp\
+        src/brtrcontrol.cpp
 
-HEADERS  += brtrcontrol.h
+HEADERS  += src/brtrcontrol.h
 
-FORMS    += brtrcontrol.ui
+FORMS    += ui/brtrcontrol.ui
+
+include ($$PWD/../../../../include/kpa_app_inc.pri)

@@ -5,6 +5,10 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QComboBox>
+#include <QMenu>
+#include <QMenuBar>
+#include <QSqlTableModel>
+
 
 namespace Ui {
 class brtrControl;
@@ -24,9 +28,19 @@ public:
     c_bit, n_bit, n_d_word, r_time, com_name, com_description,
     id_com, id_tmi, n_par, tmi_name, tmi_description;
 
+    QSqlTableModel *model;
+    QSqlTableModel *kamodel;
+    QSqlTableModel *sysmodel;
+    QSqlTableModel *subsysmodel;
+    QSqlTableModel *telemetryModel;
+
+
 private:
     Ui::brtrControl *ui;
     void update_ka();
+    QString loadDatabaseFile();
+
+
 
 private slots:
     void onSubmitKaClicked();
@@ -54,6 +68,13 @@ private slots:
     void update_com_tmi();
 
     void update_labels();
+
+    void onCommandRbChecked();
+    void onTelemetryRbChecked();
+
+    void updateKaFilter();
+    void updateSysFilter();
+    void updateSubSysFilter();
 
 };
 

@@ -38,27 +38,38 @@ brtrControl::brtrControl(QWidget *parent) :
 
     ui->sysComBox->setDuplicatesEnabled(false);
 
-    connect(ui->submitKaPb,QPushButton::clicked, this, brtrControl::onSubmitKaClicked);
-    connect(ui->submitSysPb,QPushButton::clicked, this, brtrControl::onSubmitSysClicked);
-    connect(ui->submitSubSysPb,QPushButton::clicked, this, brtrControl::onSubmitSubSysClicked);
-    connect(ui->submitComTmiPb,QPushButton::clicked, this, brtrControl::onSubmitComTmiClicked);
+    connect(ui->submitKaPb,&QPushButton::clicked, this, &brtrControl::onSubmitKaClicked);
+    connect(ui->submitSysPb,&QPushButton::clicked, this, &brtrControl::onSubmitSysClicked);
+    connect(ui->submitSubSysPb,&QPushButton::clicked, this, &brtrControl::onSubmitSubSysClicked);
+    connect(ui->submitComTmiPb,&QPushButton::clicked, this, &brtrControl::onSubmitComTmiClicked);
 
-    connect(ui->delKaPb,QPushButton::clicked, this, brtrControl::onDelKaClicked);
-    connect(ui->delSysPb,QPushButton::clicked, this, brtrControl::onDelSysClicked);
-    connect(ui->delSubSysPb,QPushButton::clicked, this, brtrControl::onDelSubSysClicked);
-    connect(ui->delComTmiPb,QPushButton::clicked, this, brtrControl::onDelComTmiClicked);
+    connect(ui->delKaPb,&QPushButton::clicked, this, &brtrControl::onDelKaClicked);
+    connect(ui->delSysPb,&QPushButton::clicked, this, &brtrControl::onDelSysClicked);
+    connect(ui->delSubSysPb,&QPushButton::clicked, this, &brtrControl::onDelSubSysClicked);
+    connect(ui->delComTmiPb,&QPushButton::clicked, this, &brtrControl::onDelComTmiClicked);
 
     connect(ui->kAComBox,SIGNAL(currentIndexChanged(int)), this, SLOT(kaChanged(int)));
 
-    connect(ui->kAComBox, SIGNAL(activated(int)), SLOT(onItemActivated()));
+    connect(ui->kAComBox, SIGNAL(activated(int)), SLOT(onItemActivated()));    
+
     connect(ui->sysComBox, SIGNAL(activated(int)), SLOT(onSysItemActivated()));
     connect(ui->subSysComBox, SIGNAL(activated(int)), SLOT(onSubSysItemActivated()));
     connect(ui->comTmiSwComBox, SIGNAL(activated(int)), SLOT(onComItemActivated()));
     connect(ui->sysComBox, SIGNAL(activated(int)), SLOT(dispProps()));
-    connect(ui->commRb, SIGNAL(clicked(bool)),SLOT(update_com_tmi()));
-    connect(ui->telemRb, SIGNAL(clicked(bool)),SLOT(update_com_tmi()));
-    connect(ui->commRb, SIGNAL(clicked(bool)),SLOT(update_labels()));
-    connect(ui->telemRb, SIGNAL(clicked(bool)),SLOT(update_labels()));
+    connect(ui->commRb, &QRadioButton::clicked, this, &brtrControl::update_com_tmi);
+    connect(ui->telemRb, &QRadioButton::clicked, this, &brtrControl::update_com_tmi);
+    connect(ui->commRb, &QRadioButton::clicked, this, &brtrControl::update_labels);
+    connect(ui->telemRb, &QRadioButton::clicked, this, &brtrControl::update_labels);
+
+    connect(ui->commandsFilterRB, &QRadioButton::clicked, this, &brtrControl::onCommandRbChecked);
+    connect(ui->telemetryFilterRB, &QRadioButton::clicked, this, &brtrControl::onTelemetryRbChecked);
+
+    connect(ui->kaFilterCB,SIGNAL(activated(int)),SLOT(updateKaFilter()));
+    connect(ui->sysFilterKB,SIGNAL(activated(int)), SLOT(updateSysFilter()));
+    connect(ui->subsysfilterCB,SIGNAL(activated(int)),SLOT(updateSubSysFilter()));
+
+
+
     QSettings settings("myapp.ini",
                         QSettings::IniFormat);
          settings.beginGroup("MainWindow");
@@ -92,6 +103,68 @@ update_system();
 update_subsystem();
 update_com_tmi();
 
+ui->commandsFilterRB->setChecked(1);
+    telemetryModel = new QSqlTableModel(parent, db);
+    telemetryModel->setTable("TMI");
+    telemetryModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    telemetryModel->select();
+    telemetryModel->setHeaderData(0, Qt::Horizontal, tr("id"));
+    telemetryModel->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
+    telemetryModel->setHeaderData(2, Qt::Horizontal, tr("number_parameter"));
+    telemetryModel->setHeaderData(3, Qt::Horizontal, tr("count_bit"));
+    telemetryModel->setHeaderData(4, Qt::Horizontal, tr("number_bit"));
+    telemetryModel->setHeaderData(5, Qt::Horizontal, tr("number_data_word"));
+    telemetryModel->setHeaderData(6, Qt::Horizontal, tr("name"));
+    telemetryModel->setHeaderData(7, Qt::Horizontal, tr("description"));
+
+    model = new QSqlTableModel(parent, db);
+    model->setTable("Command");
+    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model->select();
+    model->setHeaderData(0, Qt::Horizontal, tr("id"));
+    model->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
+    model->setHeaderData(2, Qt::Horizontal, tr("count_bit"));
+    model->setHeaderData(3, Qt::Horizontal, tr("number_bit"));
+    model->setHeaderData(4, Qt::Horizontal, tr("number_data_word"));
+    model->setHeaderData(5, Qt::Horizontal, tr("reaction_time"));
+    model->setHeaderData(6, Qt::Horizontal, tr("name"));
+    model->setHeaderData(7, Qt::Horizontal, tr("description"));
+    ui->tableView->setModel(model);
+
+    kamodel = new QSqlTableModel(parent, db);
+    kamodel->setTable("KA");
+    kamodel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    kamodel->select();
+    for(int i=0;i<kamodel->rowCount();i++){
+        ui->kaFilterCB->addItem(kamodel->index(i,1).data().toString());
+        ui->kaFilterCB->setItemData(i,kamodel->index(i,0).data().toString());
+        qDebug() << QString::number(i) << " itemdata: " << ui->kaFilterCB->itemData(i).toString();
+    }
+
+    sysmodel = new QSqlTableModel(parent, db);
+    sysmodel->setTable("System");
+    sysmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    sysmodel->select();
+    sysmodel->setFilter("id_ka = " + ui->kaFilterCB->itemData(ui->kaFilterCB->currentIndex()).toString());
+    sysmodel->select();
+
+
+    for(int i=0;i<sysmodel->rowCount();i++){
+        ui->sysFilterKB->addItem(sysmodel->index(i,2).data().toString());
+        ui->sysFilterKB->setItemData(i,sysmodel->index(i,0).data().toString());
+    }
+
+    subsysmodel = new QSqlTableModel(parent, db);
+    subsysmodel->setTable("SubSystem");
+    subsysmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    subsysmodel->select();
+
+    for(int i=0;i<subsysmodel->rowCount();i++){
+        ui->subsysfilterCB->addItem(subsysmodel->index(i,2).data().toString());
+        ui->subsysfilterCB->setItemData(i,subsysmodel->index(i,0).data().toString());
+    }
+
+    ui->commRb->setChecked(1);
 }
 
 brtrControl::~brtrControl()
@@ -189,6 +262,7 @@ void brtrControl::onSubmitComTmiClicked(){
             update_com_tmi();
         }
     }
+    model->select();
 }
 
 void brtrControl::onDelKaClicked(){
@@ -326,6 +400,7 @@ void brtrControl::onDelComTmiClicked(){
     ui->numBitInp->clear();
 
     update_com_tmi();
+    model->select();
 }
 
  void brtrControl::onItemActivated(){
@@ -545,8 +620,10 @@ void brtrControl::onDelComTmiClicked(){
                     qDebug() << "item: " << item;
                     ui->comTmiSwComBox->addItem(item, id_com);
            }
+
        }else{
                if(ui->telemRb->isChecked()){
+
                    ui->comTmiSwComBox->clear();
 
                    QString query = "SELECT id, id_subsystem, number_parameter, count_bit, number_bit, number_data_word, name, description FROM TMI WHERE id_subsystem = :id_subsys";
@@ -647,4 +724,80 @@ void brtrControl::onDelComTmiClicked(){
        QString filename = QFileDialog::getOpenFileName(this,"Open DataBase", QDir::currentPath(),"DataBase files (*.db)");
        return filename;
    }
+
+   void brtrControl::onCommandRbChecked(){
+            model->setTable("Command");
+            model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+            model->select();
+            model->setHeaderData(0, Qt::Horizontal, tr("id"));
+            model->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
+            model->setHeaderData(2, Qt::Horizontal, tr("count_bit"));
+            model->setHeaderData(3, Qt::Horizontal, tr("number_bit"));
+            model->setHeaderData(4, Qt::Horizontal, tr("number_data_word"));
+            model->setHeaderData(5, Qt::Horizontal, tr("reaction_time"));
+            model->setHeaderData(6, Qt::Horizontal, tr("name"));
+            model->setHeaderData(7, Qt::Horizontal, tr("description"));
+            ui->tableView->setModel(model);
+   }
+
+   void brtrControl::onTelemetryRbChecked(){
+           model->setTable("TMI");
+           model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+           model->select();
+           model->setHeaderData(0, Qt::Horizontal, tr("id"));
+           model->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
+           model->setHeaderData(2, Qt::Horizontal, tr("number_parameter"));
+           model->setHeaderData(3, Qt::Horizontal, tr("count_bit"));
+           model->setHeaderData(4, Qt::Horizontal, tr("number_bit"));
+           model->setHeaderData(5, Qt::Horizontal, tr("number_data_word"));
+           model->setHeaderData(6, Qt::Horizontal, tr("name"));
+           model->setHeaderData(7, Qt::Horizontal, tr("description"));
+           ui->tableView->setModel(model);
+   }
+
+
+   void brtrControl::updateKaFilter(){
+       qDebug() << "updateKaFilter()";
+       ui->sysFilterKB->clear();
+       sysmodel->setFilter("id_ka = " + ui->kaFilterCB->itemData(ui->kaFilterCB->currentIndex()).toString());
+       qDebug() << "ui->kaFilterCB->itemData(ui->kaFilterCB->currentIndex()).toString() : " << ui->kaFilterCB->itemData(ui->kaFilterCB->currentIndex()).toString();
+       sysmodel->select();
+
+
+       for(int i=0;i<sysmodel->rowCount();i++){
+           ui->sysFilterKB->addItem(sysmodel->index(i,2).data().toString());
+           ui->sysFilterKB->setItemData(i,sysmodel->index(i,0).data().toString());
+       }
+       updateSysFilter();
+   }
+
+   void brtrControl::updateSysFilter(){
+       qDebug() << "updateSysFilter()";
+       ui->subsysfilterCB->clear();
+       subsysmodel->setFilter("id_system = " + ui->sysFilterKB->itemData(ui->sysFilterKB->currentIndex()).toString());
+       subsysmodel->select();
+
+       for(int i=0;i<subsysmodel->rowCount();i++){
+           ui->subsysfilterCB->addItem(subsysmodel->index(i,2).data().toString());
+           ui->subsysfilterCB->setItemData(i,subsysmodel->index(i,0).data().toString());
+       }
+
+        updateSubSysFilter();
+   }
+
+   void brtrControl::updateSubSysFilter(){
+       if(ui->commandsFilterRB->isChecked()){
+           model->setFilter("id_subsystem = " +  ui->subsysfilterCB->itemData(ui->subsysfilterCB->currentIndex()).toString());
+           model->select();
+           ui->tableView->setModel(model);
+       }
+       if(ui->telemetryFilterRB->isChecked()){
+           telemetryModel->setFilter("id_subsystem = " +  ui->subsysfilterCB->itemData(ui->subsysfilterCB->currentIndex()).toString());
+           telemetryModel->select();
+           ui->tableView->setModel(telemetryModel);
+       }
+
+   }
+
+
 
