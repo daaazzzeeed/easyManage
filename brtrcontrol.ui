@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>918</width>
-    <height>734</height>
+    <height>793</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,39 @@
     <item row="1" column="0" colspan="4">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QTableView" name="tableView"/>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>Commands</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
+             <widget class="QTableView" name="tableView"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>Telemetry</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="0" column="0">
+             <widget class="QTableView" name="tableView_2"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer">
@@ -57,38 +89,72 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="4" column="0" colspan="2">
-          <widget class="QRadioButton" name="commandsFilterRB">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Commands</string>
+            <string>ka:</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QComboBox" name="subsysfilterCB"/>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>subsystem:</string>
+           </property>
+          </widget>
          </item>
          <item row="6" column="0" colspan="2">
-          <widget class="QRadioButton" name="telemetryFilterRB">
+          <widget class="QComboBox" name="subsysfilterCB"/>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QComboBox" name="kaFilterCB"/>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QComboBox" name="sysFilterKB"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Telemetry</string>
+            <string>system:</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QComboBox" name="kaFilterCB"/>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QComboBox" name="sysFilterKB"/>
-         </item>
-         <item row="7" column="0">
-          <spacer name="verticalSpacer">
+         <item row="9" column="0">
+          <spacer name="verticalSpacer_2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>60</height>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="11" column="0" colspan="2">
+          <widget class="QPushButton" name="deletePb">
+           <property name="text">
+            <string>Delete record</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0" colspan="2">
+          <widget class="QPushButton" name="addRecordPb">
+           <property name="text">
+            <string>Add record</string>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
@@ -103,6 +169,33 @@
            </property>
           </widget>
          </item>
+         <item row="13" column="0">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>60</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="7" column="0">
+          <widget class="QCheckBox" name="checkBox">
+           <property name="text">
+            <string>Apply Filters</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0" colspan="2">
+          <widget class="QPushButton" name="update_pb">
+           <property name="text">
+            <string>Update</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -113,38 +206,38 @@
       <property name="horizontalSpacing">
        <number>20</number>
       </property>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="kaL">
         <property name="text">
          <string>KA</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QLineEdit" name="kaInput">
         <property name="placeholderText">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
+      <item row="5" column="0" colspan="2">
        <widget class="QPushButton" name="submitKaPb">
         <property name="text">
          <string>Submit</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QPushButton" name="delKaPb">
         <property name="text">
          <string>Delete</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
+      <item row="1" column="0" colspan="2">
        <widget class="QComboBox" name="kAComBox"/>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <spacer name="kaSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -157,7 +250,7 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="2" column="0" colspan="2">
        <spacer name="kaSpacer0">
         <property name="orientation">
          <enum>Qt::Vertical</enum>

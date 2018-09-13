@@ -7,8 +7,7 @@
 #include <QComboBox>
 #include <QMenu>
 #include <QMenuBar>
-#include <QSqlTableModel>
-
+#include <QSqlRelationalTableModel>
 
 namespace Ui {
 class brtrControl;
@@ -28,12 +27,13 @@ public:
     c_bit, n_bit, n_d_word, r_time, com_name, com_description,
     id_com, id_tmi, n_par, tmi_name, tmi_description;
 
-    QSqlTableModel *model;
-    QSqlTableModel *kamodel;
-    QSqlTableModel *sysmodel;
-    QSqlTableModel *subsysmodel;
-    QSqlTableModel *telemetryModel;
+    QSqlRelationalTableModel *model;
+    QSqlRelationalTableModel *kamodel;
+    QSqlRelationalTableModel *sysmodel;
+    QSqlRelationalTableModel *subsysmodel;
+    QSqlRelationalTableModel *telemetryModel;
 
+    int row, column;
 
 private:
     Ui::brtrControl *ui;
@@ -69,13 +69,17 @@ private slots:
 
     void update_labels();
 
-    void onCommandRbChecked();
-    void onTelemetryRbChecked();
-
     void updateKaFilter();
     void updateSysFilter();
     void updateSubSysFilter();
 
+    void onTableClicked(const QModelIndex &index);
+
+    void delete_record();
+    void add_record();
+
+    void update_records();
+    void onCheckBoxClicked();
 };
 
 #endif // BRTRCONTROL_H

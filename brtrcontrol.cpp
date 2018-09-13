@@ -6,6 +6,7 @@
 #include <QHash>
 #include <QFileDialog>
 #include <QSettings>
+#include <QSqlRecord>
 
 
 brtrControl::brtrControl(QWidget *parent) :
@@ -61,14 +62,16 @@ brtrControl::brtrControl(QWidget *parent) :
     connect(ui->commRb, &QRadioButton::clicked, this, &brtrControl::update_labels);
     connect(ui->telemRb, &QRadioButton::clicked, this, &brtrControl::update_labels);
 
-    connect(ui->commandsFilterRB, &QRadioButton::clicked, this, &brtrControl::onCommandRbChecked);
-    connect(ui->telemetryFilterRB, &QRadioButton::clicked, this, &brtrControl::onTelemetryRbChecked);
-
     connect(ui->kaFilterCB,SIGNAL(activated(int)),SLOT(updateKaFilter()));
     connect(ui->sysFilterKB,SIGNAL(activated(int)), SLOT(updateSysFilter()));
     connect(ui->subsysfilterCB,SIGNAL(activated(int)),SLOT(updateSubSysFilter()));
 
+    connect(ui->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
 
+    connect(ui->deletePb,SIGNAL(clicked()), this, SLOT(delete_record()));
+    connect(ui->addRecordPb,SIGNAL(clicked()), this, SLOT(add_record()));
+    connect(ui->update_pb, SIGNAL(clicked()), this, SLOT(update_records()));
+    connect(ui->checkBox, SIGNAL(clicked()), this, SLOT(onCheckBoxClicked()));
 
     QSettings settings("myapp.ini",
                         QSettings::IniFormat);
@@ -103,10 +106,10 @@ update_system();
 update_subsystem();
 update_com_tmi();
 
-ui->commandsFilterRB->setChecked(1);
-    telemetryModel = new QSqlTableModel(parent, db);
+    telemetryModel = new QSqlRelationalTableModel(parent, db);
     telemetryModel->setTable("TMI");
-    telemetryModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    telemetryModel->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
+    telemetryModel->setRelation(1,QSqlRelation("SubSystem", "id", "name"));
     telemetryModel->select();
     telemetryModel->setHeaderData(0, Qt::Horizontal, tr("id"));
     telemetryModel->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
@@ -117,9 +120,10 @@ ui->commandsFilterRB->setChecked(1);
     telemetryModel->setHeaderData(6, Qt::Horizontal, tr("name"));
     telemetryModel->setHeaderData(7, Qt::Horizontal, tr("description"));
 
-    model = new QSqlTableModel(parent, db);
+    model = new QSqlRelationalTableModel(parent, db);
     model->setTable("Command");
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
+    model->setRelation(1,QSqlRelation("SubSystem", "id", "name"));
     model->select();
     model->setHeaderData(0, Qt::Horizontal, tr("id"));
     model->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
@@ -130,10 +134,11 @@ ui->commandsFilterRB->setChecked(1);
     model->setHeaderData(6, Qt::Horizontal, tr("name"));
     model->setHeaderData(7, Qt::Horizontal, tr("description"));
     ui->tableView->setModel(model);
+    ui->tableView_2->setModel(telemetryModel);
 
-    kamodel = new QSqlTableModel(parent, db);
+    kamodel = new QSqlRelationalTableModel(parent, db);
     kamodel->setTable("KA");
-    kamodel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    kamodel->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
     kamodel->select();
     for(int i=0;i<kamodel->rowCount();i++){
         ui->kaFilterCB->addItem(kamodel->index(i,1).data().toString());
@@ -141,30 +146,33 @@ ui->commandsFilterRB->setChecked(1);
         qDebug() << QString::number(i) << " itemdata: " << ui->kaFilterCB->itemData(i).toString();
     }
 
-    sysmodel = new QSqlTableModel(parent, db);
+    sysmodel = new QSqlRelationalTableModel(parent, db);
     sysmodel->setTable("System");
-    sysmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    sysmodel->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
     sysmodel->select();
     sysmodel->setFilter("id_ka = " + ui->kaFilterCB->itemData(ui->kaFilterCB->currentIndex()).toString());
     sysmodel->select();
 
 
     for(int i=0;i<sysmodel->rowCount();i++){
-        ui->sysFilterKB->addItem(sysmodel->index(i,2).data().toString());
+        ui->sysFilterKB->addItem(sysmodel->index(i,3).data().toString());
         ui->sysFilterKB->setItemData(i,sysmodel->index(i,0).data().toString());
     }
 
-    subsysmodel = new QSqlTableModel(parent, db);
+    subsysmodel = new QSqlRelationalTableModel(parent, db);
     subsysmodel->setTable("SubSystem");
-    subsysmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    subsysmodel->setEditStrategy(QSqlRelationalTableModel::OnFieldChange);
     subsysmodel->select();
 
     for(int i=0;i<subsysmodel->rowCount();i++){
-        ui->subsysfilterCB->addItem(subsysmodel->index(i,2).data().toString());
+        ui->subsysfilterCB->addItem(subsysmodel->index(i,4).data().toString());
         ui->subsysfilterCB->setItemData(i,subsysmodel->index(i,0).data().toString());
     }
 
     ui->commRb->setChecked(1);
+    ui->tableView->hideColumn(0);
+    ui->tableView_2->hideColumn(0);
+
 }
 
 brtrControl::~brtrControl()
@@ -725,37 +733,6 @@ void brtrControl::onDelComTmiClicked(){
        return filename;
    }
 
-   void brtrControl::onCommandRbChecked(){
-            model->setTable("Command");
-            model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-            model->select();
-            model->setHeaderData(0, Qt::Horizontal, tr("id"));
-            model->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
-            model->setHeaderData(2, Qt::Horizontal, tr("count_bit"));
-            model->setHeaderData(3, Qt::Horizontal, tr("number_bit"));
-            model->setHeaderData(4, Qt::Horizontal, tr("number_data_word"));
-            model->setHeaderData(5, Qt::Horizontal, tr("reaction_time"));
-            model->setHeaderData(6, Qt::Horizontal, tr("name"));
-            model->setHeaderData(7, Qt::Horizontal, tr("description"));
-            ui->tableView->setModel(model);
-   }
-
-   void brtrControl::onTelemetryRbChecked(){
-           model->setTable("TMI");
-           model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-           model->select();
-           model->setHeaderData(0, Qt::Horizontal, tr("id"));
-           model->setHeaderData(1, Qt::Horizontal, tr("id_subsystem"));
-           model->setHeaderData(2, Qt::Horizontal, tr("number_parameter"));
-           model->setHeaderData(3, Qt::Horizontal, tr("count_bit"));
-           model->setHeaderData(4, Qt::Horizontal, tr("number_bit"));
-           model->setHeaderData(5, Qt::Horizontal, tr("number_data_word"));
-           model->setHeaderData(6, Qt::Horizontal, tr("name"));
-           model->setHeaderData(7, Qt::Horizontal, tr("description"));
-           ui->tableView->setModel(model);
-   }
-
-
    void brtrControl::updateKaFilter(){
        qDebug() << "updateKaFilter()";
        ui->sysFilterKB->clear();
@@ -765,7 +742,7 @@ void brtrControl::onDelComTmiClicked(){
 
 
        for(int i=0;i<sysmodel->rowCount();i++){
-           ui->sysFilterKB->addItem(sysmodel->index(i,2).data().toString());
+           ui->sysFilterKB->addItem(sysmodel->index(i,3).data().toString());
            ui->sysFilterKB->setItemData(i,sysmodel->index(i,0).data().toString());
        }
        updateSysFilter();
@@ -778,7 +755,7 @@ void brtrControl::onDelComTmiClicked(){
        subsysmodel->select();
 
        for(int i=0;i<subsysmodel->rowCount();i++){
-           ui->subsysfilterCB->addItem(subsysmodel->index(i,2).data().toString());
+           ui->subsysfilterCB->addItem(subsysmodel->index(i,4).data().toString());
            ui->subsysfilterCB->setItemData(i,subsysmodel->index(i,0).data().toString());
        }
 
@@ -786,18 +763,86 @@ void brtrControl::onDelComTmiClicked(){
    }
 
    void brtrControl::updateSubSysFilter(){
-       if(ui->commandsFilterRB->isChecked()){
-           model->setFilter("id_subsystem = " +  ui->subsysfilterCB->itemData(ui->subsysfilterCB->currentIndex()).toString());
-           model->select();
-           ui->tableView->setModel(model);
+       if(ui->tabWidget->currentIndex() == 0){
+           if(ui->checkBox->isChecked()){
+               model->setFilter("id_subsystem = " +  ui->subsysfilterCB->itemData(ui->subsysfilterCB->currentIndex()).toString());
+               model->select();
+               ui->tableView->setModel(model);
+           }
        }
-       if(ui->telemetryFilterRB->isChecked()){
-           telemetryModel->setFilter("id_subsystem = " +  ui->subsysfilterCB->itemData(ui->subsysfilterCB->currentIndex()).toString());
-           telemetryModel->select();
-           ui->tableView->setModel(telemetryModel);
+       if(ui->tabWidget->currentIndex() == 1){
+           if(ui->checkBox->isChecked()){
+               telemetryModel->setFilter("id_subsystem = " +  ui->subsysfilterCB->itemData(ui->subsysfilterCB->currentIndex()).toString());
+               telemetryModel->select();
+               ui->tableView_2->setModel(telemetryModel);
+           }
        }
+   }
 
+   void brtrControl::onTableClicked(const QModelIndex &index){
+       if(index.isValid()){
+           row = index.row();
+           column = index.column();
+           qDebug() << "row :" << row << ", column :" << column;
+       }
    }
 
 
+   void brtrControl::delete_record(){
+       if(ui->tabWidget->currentIndex() == 0){
+           model->removeRow(row);
+   }else{
+                    telemetryModel->removeRow(row);
+       }
+   }
+
+   void brtrControl::add_record(){
+       if(ui->tabWidget->currentIndex() == 0){
+           qDebug() << "ui->tabWidget->currentIndex(): " << ui->tabWidget->currentIndex();
+           int rowCount = model->rowCount();
+           if(model->rowCount() != 0){
+              qDebug() << "rowCount: " << model->rowCount();
+             /*  bool isInserted = */ model->insertRow(rowCount);
+               model->setData(model->index(rowCount, 0), model->data(model->index(rowCount-1,0)).toInt()+1);
+               model->setData(model->index(rowCount, 1), model->data(model->index(rowCount-1,1)));
+              bool inserted = model->insertRow(rowCount);
+              qDebug() << "inserted : " << inserted;
+           }else{
+               model->insertRow(0);
+               model->setData(model->index(0,0), 0);
+           }
+   }else{
+           int rowCount = telemetryModel->rowCount();
+           if(telemetryModel->rowCount() != 0){
+              qDebug() << "rowCount: " << telemetryModel->rowCount();
+             /*  bool isInserted = */ telemetryModel->insertRow(rowCount);
+               telemetryModel->setData(telemetryModel->index(rowCount, 0), telemetryModel->data(telemetryModel->index(rowCount-1,0)).toInt()+1);
+               telemetryModel->setData(telemetryModel->index(rowCount, 1), telemetryModel->data(telemetryModel->index(rowCount-1,1)));
+              bool inserted = telemetryModel->insertRow(rowCount);
+              qDebug() << "inserted : " << inserted;
+           }else{
+               model->insertRow(0);
+               model->setData(telemetryModel->index(0,0), 0);
+           }
+       }
+   }
+
+  void brtrControl::update_records(){
+     //does nothing
+      model->setFilter("");
+      model->select();
+      ui->tableView->setModel(model);
+      telemetryModel->setFilter("");
+      telemetryModel->select();
+      ui->tableView_2->setModel(telemetryModel);
+
+  }
+
+  void brtrControl::onCheckBoxClicked(){
+      if(ui->checkBox->isChecked()){
+          ui->update_pb->hide();
+      }else{
+          ui->update_pb->setVisible(true);
+      }
+  }
 

@@ -19,4 +19,4 @@ HEADERS  += src/brtrcontrol.h
 
 FORMS    += ui/brtrcontrol.ui
 
-include ($$PWD/../../../../include/kpa_app_inc.pri)
+include ($$PWD/../../../ include/kpa_app_inc.pri)
