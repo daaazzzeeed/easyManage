@@ -1,12 +1,13 @@
 # DataBaseControl
 
 This is a database control system written to automate filling corporate database. 
-This program is still in development so some features can work incorrectly.
+This is beta version of this application, i still test it and trying to make it better c:
 
-Ka is the main table containing System, containing SubSystem, containing ComTmi. Removal of Ka element entails chain removal of appropriate System, SubSystem and ComTmi elements. Similar situation applies to the removal of System and SubSystem elements.
+Ka is the main table containing System, containing SubSystem, containing ComTmi. Removal of Ka element entails chain removal of appropriate System, SubSystem and Com/Tmi elements. Similar situation applies to the removal of System and SubSystem elements. Command/TMI tables contain differrent system parametres information.
 
-User inteface gives you the ability to add, delete and display information on cosmic vehicles.
-![alt tag](new_version.png)
+User inteface gives you the ability to add, delete and display information on cosmic vehicles. From now you can easily add, delete and edit data right from TableView thanks to Qt implementation of model/view data representation.
+You can switch between Command and TMI by switching tabs in QTabWidget:
+![alt tag](new_version_.png)
 Screenshots provide user with the general look of this application.
 ![alt tag](new_version_2.png)
 
@@ -20,38 +21,39 @@ Database gives user the ability to store information on cosmic vehicles, its sys
 Contains 5 tables: 
 - KA (Kosmic Apparat)
     rows:
-    - id
-    - ka
-- System
-    - id
-    - id_ka
-    - address
-    - name
+    - id - int (not displayed) - foreign key for Systems id_ka
+    - ka - String
+- System 
+    - id - int (not displayed) - foreign key for SubSystems id_subsystem
+    - id_ka - int
+    - address - String
+    - name - String
 - SubSystem
-    - id
-    - id_subsystem
-    - subaddress
-    - count_data_word
-    - name
+    - id - int (not displayed) - foreign key for TMI/Command id_subsystem
+    - id_subsystem - int
+    - subaddress - String
+    - count_data_word - String
+    - name - String
 - TMI
-    - id
-    - id_subsystem
-    - number_parameter
-    - count_bit
-    - number_bit
-    - number_data_word
-    - name
-    - description
+    - id - int (not displayed)
+    - id_subsystem - int
+    - number_parameter - int
+    - count_bit - int
+    - number_bit - int
+    - number_data_word - int
+    - name - String
+    - description - String
 - Command
-    - id
-    - id_subsystem
-    - count_bit
-    - number_bit
-    - number_data_word
-    - reaction_time
-    - name
-    - description
+    - id - int (not displayed)
+    - id_subsystem - int
+    - count_bit - int
+    - number_bit - int
+    - number_data_word - int
+    - reaction_time - int
+    - name - String
+    - description - String
     
+    Please notice that for convenience' sake program displays SubSystem's name in the field id_subsystem of QTableView
 # Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 This application requires SQLite client(e.g. SQLite Maestro).
