@@ -15,45 +15,6 @@ Screenshots provide user with the general look of this application.
 - [Qt](http://www.qt.io/) - user interface and internal logic
 - [SQLite Maestro](https://www.sqlmaestro.com/products/sqlite/maestro/) - used to create a database for this project
 
-# Database 
-Database gives user the ability to store information on cosmic vehicles, its systems, subsystems and commands/telemetry data.
-  ## Database structure
-Contains 5 tables: 
-- KA (Kosmic Apparat)
-    rows:
-    - id - int (not displayed) - foreign key for Systems id_ka
-    - ka - String
-- System 
-    - id - int (not displayed) - foreign key for SubSystems id_subsystem
-    - id_ka - int
-    - address - String
-    - name - String
-- SubSystem
-    - id - int (not displayed) - foreign key for TMI/Command id_subsystem
-    - id_subsystem - int
-    - subaddress - String
-    - count_data_word - String
-    - name - String
-- TMI
-    - id - int (not displayed)
-    - id_subsystem - int
-    - number_parameter - int
-    - count_bit - int
-    - number_bit - int
-    - number_data_word - int
-    - name - String
-    - description - String
-- Command
-    - id - int (not displayed)
-    - id_subsystem - int
-    - count_bit - int
-    - number_bit - int
-    - number_data_word - int
-    - reaction_time - int
-    - name - String
-    - description - String
-    
-    Please notice that for convenience' sake program displays SubSystem's name in the field id_subsystem of QTableView
 # Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 This application requires SQLite client(e.g. SQLite Maestro).
