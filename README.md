@@ -3,10 +3,8 @@
 This is a database control system written to automate filling corporate database. 
 This is beta version of this application, i still test it and trying to make it better c:
 
-Ka is the main table containing System, containing SubSystem, containing ComTmi. Removal of Ka element entails chain removal of appropriate System, SubSystem and Com/Tmi elements. Similar situation applies to the removal of System and SubSystem elements. Command/TMI tables contain differrent system parametres information.
-
-User inteface gives you the ability to add, delete and display information on cosmic vehicles. From now you can easily add, delete and edit data right from TableView thanks to Qt implementation of model/view data representation.
-You can switch between Command and TMI by switching tabs in QTabWidget:
+User inteface gives you the ability to add, delete and display information. From now you can easily add, delete and edit data right from TableView thanks to Qt implementation of model/view data representation.
+You can switch between tabs in QTabWidget:
 ![alt tag](new_version_.png)
 Screenshots provide user with the general look of this application.
 ![alt tag](new_version_2.png)
