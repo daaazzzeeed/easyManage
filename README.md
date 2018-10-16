@@ -1,4 +1,4 @@
-# DataBaseControl ![C++ pre-release](https://img.shields.io/badge/C%2B%2B-prerelease-blue.svg)
+# easyManage ![C++ pre-release](https://img.shields.io/badge/C%2B%2B-prerelease-blue.svg)
 
 This is a database control system written to automate filling database. 
 This is beta version of this application, i still test it and trying to make it better c:
