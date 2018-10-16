@@ -1,13 +1,10 @@
 # DataBaseControl ![C++ pre-release](https://img.shields.io/badge/C%2B%2B-prerelease-blue.svg)
 
-This is a database control system written to automate filling corporate database. 
+This is a database control system written to automate filling database. 
 This is beta version of this application, i still test it and trying to make it better c:
 
 User inteface gives you the ability to add, delete and display information. From now you can easily add, delete and edit data right from TableView thanks to Qt implementation of model/view data representation.
-You can switch between tabs in QTabWidget:
-![alt tag](new_version_.png)
-Screenshots provide user with the general look of this application.
-![alt tag](new_version_2.png)
+You can switch between tabs in QTabWidget
 
 # Built With
 - [Qt](http://www.qt.io/) - user interface and internal logic
